@@ -51,4 +51,12 @@ public class StudentController {
     public Student removeStudentFromGroup(@PathVariable Long studentId, @PathVariable Long groupId) {
         return studentService.removeStudentFromGroup(studentId, groupId);
     }
+
+    @GetMapping("/filter")
+    public List<Student> filterStudents(
+            @RequestParam(required = false) String groupName,
+            @RequestParam(required = false) String namePart,
+            @RequestParam(required = false) String emailDomain) {
+        return studentService.findStudentsByFilters(groupName, namePart, emailDomain);
+    }
 }
