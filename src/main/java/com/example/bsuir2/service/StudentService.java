@@ -5,8 +5,6 @@ import com.example.bsuir2.model.StudentGroup;
 import com.example.bsuir2.repository.StudentRepository;
 import com.example.bsuir2.repository.StudentGroupRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class StudentService {
     }
 
     public Student updateStudent(Long id, Student updatedStudent) {
-        Student student = getStudentById(id);
+        final Student student = getStudentById(id);
         student.setName(updatedStudent.getName());
         student.setEmail(updatedStudent.getEmail());
         return studentRepository.save(student);
@@ -45,8 +43,8 @@ public class StudentService {
     }
 
     public Student addStudentToGroup(Long studentId, Long groupId) {
-        Student student = getStudentById(studentId);
-        StudentGroup group = groupRepository.findById(groupId)
+        final Student student = getStudentById(studentId);
+        final StudentGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Группа не найдена"));
 
         student.getGroups().add(group);
@@ -59,8 +57,8 @@ public class StudentService {
     }
 
     public Student removeStudentFromGroup(Long studentId, Long groupId) {
-        Student student = getStudentById(studentId);
-        StudentGroup group = groupRepository.findById(groupId)
+        final Student student = getStudentById(studentId);
+        final StudentGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Группа не найдена"));
 
         student.getGroups().remove(group);

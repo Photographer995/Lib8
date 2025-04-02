@@ -24,28 +24,23 @@ public class StudentGroupService {
     }
 
     public List<StudentGroup> getAllGroups() {
-        // Ваш текущий код для получения групп
-        return groupRepository.findAll();  // Например, только из БД для этого примера
+        return groupRepository.findAll();
     }
 
     public StudentGroup getGroupById(Long id) {
-        // Сначала проверяем кэш
-        StudentGroup cachedGroup = (StudentGroup) cacheService.getFromCache(id);
+        final StudentGroup cachedGroup = (StudentGroup) cacheService.getFromCache(id);
         if (cachedGroup != null) {
             return cachedGroup;
         }
 
-        // Если данных нет в кэше, получаем их из БД или API
-        Optional<StudentGroup> groupFromDb = groupRepository.findById(id);
+        final Optional<StudentGroup> groupFromDb = groupRepository.findById(id);
         if (groupFromDb.isPresent()) {
             cacheService.putInCache(id, groupFromDb.get());
             return groupFromDb.get();
         }
 
-        // Если группа не найдена в БД, пытаемся получить из API
-        String groupUrl = BSUIR_API_URL + "/" + id;
-        StudentGroup groupFromApi = restTemplate.getForObject(groupUrl, StudentGroup.class);
-
+        final String groupUrl = BSUIR_API_URL + "/" + id;
+        final StudentGroup groupFromApi = restTemplate.getForObject(groupUrl, StudentGroup.class);
         if (groupFromApi != null) {
             cacheService.putInCache(id, groupFromApi);
             return groupFromApi;
@@ -68,12 +63,14 @@ public class StudentGroupService {
     }
 
     public StudentGroup addStudentToGroup(Long groupId, Long studentId) {
-        StudentGroup group = getGroupById(groupId);
+        final StudentGroup group = getGroupById(groupId);
+        // Логика добавления студента может быть дополнена
         return group;
     }
 
     public StudentGroup removeStudentFromGroup(Long groupId, Long studentId) {
-        StudentGroup group = getGroupById(groupId);
+        final StudentGroup group = getGroupById(groupId);
+        // Логика удаления студента может быть дополнена
         return group;
     }
 }

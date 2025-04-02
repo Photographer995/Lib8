@@ -1,7 +1,9 @@
 plugins {
     id 'java'
+
     id 'org.springframework.boot' version '3.4.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'checkstyle'
 }
 
 group = 'com.example'
@@ -19,6 +21,13 @@ configurations {
     }
 }
 
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -30,11 +39,35 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
+    //implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.5'
+
+
+
+
+
+}
+
+
+
+checkstyle {
+    toolVersion = "10.21.3"
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.springdoc:springdoc-openapi-starter-common:2.8.5'
+        force 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.5'
+        force 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
+    }
 }
