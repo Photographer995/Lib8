@@ -11,21 +11,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+
     private final StudentRepository studentRepository;
     private final StudentGroupRepository groupRepository;
     private final CacheService cacheService;
+    private final InvocationCounter invocationCounter;
 
-    public StudentService(StudentRepository studentRepository, StudentGroupRepository groupRepository, CacheService cacheService) {
+    public StudentService(StudentRepository studentRepository,
+                          StudentGroupRepository groupRepository,
+                          CacheService cacheService,
+                          InvocationCounter invocationCounter) {
         this.studentRepository = studentRepository;
         this.groupRepository = groupRepository;
         this.cacheService = cacheService;
+        this.invocationCounter = invocationCounter;
     }
 
     public List<Student> getAllStudents() {
+        invocationCounter.increment();
         return studentRepository.findAll();
     }
 
     public Student getStudentById(Long id) {
+        invocationCounter.increment();
         final Student cached = (Student) cacheService.getFromCache(id);
         if (cached != null) return cached;
 
@@ -36,13 +44,14 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
+        invocationCounter.increment();
         final Student saved = studentRepository.save(student);
         cacheService.putInCache(saved.getId(), saved);
         return saved;
     }
 
     public List<Student> bulkCreateStudents(List<Student> students) {
-        // Используем Stream API и лямбда-выражения для обработки списка студентов
+        invocationCounter.increment();
         final List<Student> savedStudents = students.stream()
                 .map(student -> {
                     final Student saved = studentRepository.save(student);
@@ -54,6 +63,7 @@ public class StudentService {
     }
 
     public Student updateStudent(Long id, Student updatedStudent) {
+        invocationCounter.increment();
         final Student student = getStudentById(id);
         student.setName(updatedStudent.getName());
         student.setEmail(updatedStudent.getEmail());
@@ -63,11 +73,13 @@ public class StudentService {
     }
 
     public void deleteStudent(Long id) {
+        invocationCounter.increment();
         studentRepository.deleteById(id);
         cacheService.removeFromCache(id);
     }
 
     public Student addStudentToGroup(Long studentId, Long groupId) {
+        invocationCounter.increment();
         final Student student = getStudentById(studentId);
         final StudentGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Группа не найдена"));
@@ -85,6 +97,7 @@ public class StudentService {
     }
 
     public Student removeStudentFromGroup(Long studentId, Long groupId) {
+        invocationCounter.increment();
         final Student student = getStudentById(studentId);
         final StudentGroup group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Группа не найдена"));
@@ -102,6 +115,7 @@ public class StudentService {
     }
 
     public List<Student> findStudentsByFilters(String groupName, String namePart, String emailDomain) {
+        invocationCounter.increment();
         return studentRepository.findStudentsByFilters(groupName, namePart, emailDomain);
     }
 }
