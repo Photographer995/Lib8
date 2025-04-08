@@ -7,7 +7,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class StudentGroupService {
 
@@ -28,10 +27,8 @@ public class StudentGroupService {
     }
 
     public StudentGroup getGroupById(Long id) {
-        final StudentGroup cachedGroup = (StudentGroup) cacheService.getFromCache(id);
-        if (cachedGroup != null) {
-            return cachedGroup;
-        }
+       final StudentGroup cached = (StudentGroup) cacheService.getFromCache(id);
+        if (cached != null) return cached;
 
         final Optional<StudentGroup> groupFromDb = groupRepository.findById(id);
         if (groupFromDb.isPresent()) {
@@ -64,13 +61,14 @@ public class StudentGroupService {
 
     public StudentGroup addStudentToGroup(Long groupId, Long studentId) {
         final StudentGroup group = getGroupById(groupId);
-        // Логика добавления студента может быть дополнена
+        cacheService.putInCache(groupId, group);
         return group;
     }
 
     public StudentGroup removeStudentFromGroup(Long groupId, Long studentId) {
         final StudentGroup group = getGroupById(groupId);
-        // Логика удаления студента может быть дополнена
+        cacheService.putInCache(groupId, group);
         return group;
     }
 }
+

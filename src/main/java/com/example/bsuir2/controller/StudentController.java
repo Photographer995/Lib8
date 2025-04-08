@@ -39,6 +39,11 @@ public class StudentController {
         return studentService.createStudent(student);
     }
 
+    @PostMapping("/bulk")
+    public List<Student> bulkCreateStudents(@RequestBody List<Student> students) {
+        return studentService.bulkCreateStudents(students);
+    }
+
     @PutMapping("/{id}")
     public Student updateStudent(@PathVariable Long id, @RequestBody Student student) {
         return studentService.updateStudent(id, student);
