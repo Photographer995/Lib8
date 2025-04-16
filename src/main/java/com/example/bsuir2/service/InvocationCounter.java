@@ -1,17 +1,18 @@
 package com.example.bsuir2.service;
 
 import org.springframework.stereotype.Service;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class InvocationCounter {
+    private final AtomicLong counter = new AtomicLong(0);
 
-    private long counter = 0;
-
-    public synchronized void increment() {
-        counter++;
+    // Метод вызывается только аспектом, синхронизация не нужна (AtomicLong потокобезопасен)
+    public void increment() {
+        counter.incrementAndGet();
     }
 
-    public synchronized long getCounter() {
-        return counter;
+    public long getCounter() {
+        return counter.get();
     }
 }

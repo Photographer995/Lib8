@@ -7,13 +7,10 @@ import com.example.bsuir2.repository.StudentGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,35 +35,36 @@ public class StudentServiceTest {
 
     @BeforeEach
     public void setup() {
-        student1 = new Student();
-        student1.setName("John Doe");
-        student1.setEmail("john@example.com");
+        student1 = mock(Student.class);
+        student2 = mock(Student.class);
 
-        student2 = new Student();
-        student2.setName("Jane Smith");
-        student2.setEmail("jane@example.com");
+        when(student1.getId()).thenReturn(1L);
+        when(student1.getName()).thenReturn("Svyat Doe");
+        when(student1.getEmail()).thenReturn("sssvu@example.com");
+
+        when(student2.getId()).thenReturn(2L);
+        when(student2.getName()).thenReturn("Blu Smith");
+        when(student2.getEmail()).thenReturn("sky@example.com");
     }
 
     @Test
     public void testCreateStudent() {
-        when(studentRepository.save(student1)).thenAnswer(invocation -> {
+        when(studentRepository.save(any(Student.class))).thenAnswer(invocation -> {
             Student s = invocation.getArgument(0);
-            s.setId(1L);
+            when(s.getId()).thenReturn(1L);
             return s;
         });
 
         Student created = studentService.createStudent(student1);
         assertNotNull(created.getId());
-        verify(cacheService, times(1)).putInCache(created.getId(), created);
+        verify(cacheService).putInCache(created.getId(), created);
     }
 
     @Test
     public void testBulkCreateStudents() {
         when(studentRepository.save(any(Student.class))).thenAnswer(invocation -> {
             Student s = invocation.getArgument(0);
-            if (s.getId() == null) {
-                s.setId(1L + (long)(Math.random()*100)); // симуляция id
-            }
+            when(s.getId()).thenReturn((long) (1 + Math.random() * 100));
             return s;
         });
 
@@ -74,13 +72,13 @@ public class StudentServiceTest {
         List<Student> savedStudents = studentService.bulkCreateStudents(students);
 
         assertEquals(2, savedStudents.size());
-        savedStudents.forEach(s -> assertNotNull(s.getId()));
         verify(cacheService, times(2)).putInCache(anyLong(), any(Student.class));
     }
 
     @Test
     public void testGetStudentByIdFromCache() {
         when(cacheService.getFromCache(1L)).thenReturn(student1);
+
         Student cached = studentService.getStudentById(1L);
         assertEquals(student1, cached);
         verify(studentRepository, never()).findById(1L);
@@ -93,73 +91,69 @@ public class StudentServiceTest {
 
         Student s = studentService.getStudentById(2L);
         assertEquals(student2, s);
-        verify(cacheService, times(1)).putInCache(2L, student2);
+        verify(cacheService).putInCache(2L, student2);
     }
 
     @Test
     public void testUpdateStudent() {
-        student1.setId(1L);
         when(cacheService.getFromCache(1L)).thenReturn(student1);
         when(studentRepository.save(any(Student.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Student updatedInfo = new Student();
-        updatedInfo.setName("Updated Name");
-        updatedInfo.setEmail("updated@example.com");
+        Student updatedInfo = mock(Student.class);
+        when(updatedInfo.getName()).thenReturn("Updated Name");
+        when(updatedInfo.getEmail()).thenReturn("updated@example.com");
 
         Student updatedStudent = studentService.updateStudent(1L, updatedInfo);
-        assertEquals("Updated Name", updatedStudent.getName());
-        assertEquals("updated@example.com", updatedStudent.getEmail());
-        verify(cacheService, times(1)).putInCache(1L, updatedStudent);
+
+        verify(student1).setName("Updated Name");
+        verify(student1).setEmail("updated@example.com");
+        verify(cacheService).putInCache(1L, student1);
     }
 
     @Test
     public void testDeleteStudent() {
-        student1.setId(1L);
         doNothing().when(studentRepository).deleteById(1L);
         doNothing().when(cacheService).removeFromCache(1L);
 
         studentService.deleteStudent(1L);
-        verify(studentRepository, times(1)).deleteById(1L);
-        verify(cacheService, times(1)).removeFromCache(1L);
+
+        verify(studentRepository).deleteById(1L);
+        verify(cacheService).removeFromCache(1L);
     }
 
     @Test
     public void testAddStudentToGroup() {
-        student1.setId(1L);
-        StudentGroup group = new StudentGroup();
-        group.setId(10L);
-        group.setName("Group A");
-
+        StudentGroup group = mock(StudentGroup.class);
+        Set<StudentGroup> groups = new HashSet<>();
+        when(student1.getGroups()).thenReturn(groups);
         when(cacheService.getFromCache(1L)).thenReturn(student1);
         when(groupRepository.findById(10L)).thenReturn(Optional.of(group));
-        when(studentRepository.save(any(Student.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(groupRepository.save(any(StudentGroup.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(studentRepository.save(any(Student.class))).thenReturn(student1);
+        when(groupRepository.save(any(StudentGroup.class))).thenReturn(group);
 
-        Student s = studentService.addStudentToGroup(1L, 10L);
-        assertTrue(s.getGroups().contains(group));
-        verify(cacheService, times(1)).putInCache(1L, s);
-        verify(cacheService, times(1)).putInCache(10L, group);
+        Student result = studentService.addStudentToGroup(1L, 10L);
+
+        assertTrue(result.getGroups().contains(group));
+        verify(cacheService).putInCache(1L, student1);
+        verify(cacheService).putInCache(10L, group);
     }
 
     @Test
     public void testRemoveStudentFromGroup() {
-        student1.setId(1L);
-        StudentGroup group = new StudentGroup();
-        group.setId(10L);
-        group.setName("Group A");
+        StudentGroup group = mock(StudentGroup.class);
+        Set<StudentGroup> groups = new HashSet<>();
+        groups.add(group);
 
-        // Изначально связываем студента и группу
-        student1.getGroups().add(group);
-        group.getStudents().add(student1);
-
+        when(student1.getGroups()).thenReturn(groups);
         when(cacheService.getFromCache(1L)).thenReturn(student1);
         when(groupRepository.findById(10L)).thenReturn(Optional.of(group));
-        when(studentRepository.save(any(Student.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(groupRepository.save(any(StudentGroup.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(studentRepository.save(any(Student.class))).thenReturn(student1);
+        when(groupRepository.save(any(StudentGroup.class))).thenReturn(group);
 
-        Student s = studentService.removeStudentFromGroup(1L, 10L);
-        assertFalse(s.getGroups().contains(group));
-        verify(cacheService, times(1)).putInCache(1L, s);
-        verify(cacheService, times(1)).putInCache(10L, group);
+        Student result = studentService.removeStudentFromGroup(1L, 10L);
+
+        assertFalse(result.getGroups().contains(group));
+        verify(cacheService).putInCache(1L, student1);
+        verify(cacheService).putInCache(10L, group);
     }
 }

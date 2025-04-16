@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
     implementation 'org.springdoc:springdoc-openapi-starter-common:2.8.5'
 
+
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
@@ -53,6 +54,13 @@ dependencies {
     // Mockito
     testImplementation 'org.mockito:mockito-core:5.12.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    implementation 'jakarta.el:jakarta.el-api:5.0.1'
+    runtimeOnly 'org.glassfish:jakarta.el:5.0.1'
 
 }
 
@@ -79,3 +87,10 @@ test {
     useJUnitPlatform()
 }
 
+sourceSets {
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+    }
+}

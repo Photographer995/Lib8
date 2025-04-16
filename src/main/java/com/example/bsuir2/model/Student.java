@@ -1,15 +1,12 @@
 package com.example.bsuir2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToMany;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,6 +20,6 @@ public class Student {
     private String email;
 
     @ManyToMany(mappedBy = "students")
-    @JsonIgnoreProperties("students") // Убираем вложенность студентов в группах
+    @JsonIgnoreProperties("students") // убираем циклическую вложенность
     private Set<StudentGroup> groups = new HashSet<>();
 }
