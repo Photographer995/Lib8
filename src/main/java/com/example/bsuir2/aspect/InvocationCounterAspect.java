@@ -15,7 +15,6 @@ public class InvocationCounterAspect {
         this.invocationCounter = invocationCounter;
     }
 
-    // Исключаем сам InvocationCounter из перехвата
     @Before("execution(* com.example.bsuir2.service..*(..)) " +
             "&& !within(com.example.bsuir2.service.InvocationCounter)")
     public void beforeServiceMethod(JoinPoint joinPoint) {

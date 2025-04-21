@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap');
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 40px;
+    margin: 0;
+    background-image: url('https://avatars.mds.yandex.net/i?id=4e21d19150ec6f3fdd2d8cfa8b3b670a8a367f02-12569941-images-thumbs&n=13'); /* тёмный minecraft стиль */
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #00ff88;
+    text-shadow: 2px 2px #000;
+}
+
+main {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 15px #000;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+form input {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+form button {
+    padding: 12px;
+    background-color: #00aa55;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+form button:hover {
+    background-color: #00cc77;
+}
+
+#student-list > div {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+button {
+    background-color: #444;
+    color: #fff;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+button:hover {
+    background-color: #666;
+}

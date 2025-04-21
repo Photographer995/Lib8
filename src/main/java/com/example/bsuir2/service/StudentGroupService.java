@@ -14,7 +14,7 @@ public class StudentGroupService {
     private final RestTemplate restTemplate;
     private final CacheService cacheService;
 
-    private static final String BSUIR_API_URL = "***";
+    private static final String BSUIR_API_URL = "https://iis.bsuir.by/api/v1/student-groups";
 
     public StudentGroupService(StudentGroupRepository groupRepository, RestTemplate restTemplate, CacheService cacheService) {
         this.groupRepository = groupRepository;

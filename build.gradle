@@ -59,8 +59,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
-    implementation 'jakarta.el:jakarta.el-api:5.0.1'
-    runtimeOnly 'org.glassfish:jakarta.el:5.0.1'
+    implementation 'jakarta.el:jakarta.el-api:4.0.0'
+    runtimeOnly 'org.glassfish:jakarta.el:4.0.2'
+
 
 }
 
@@ -93,4 +94,7 @@ sourceSets {
             srcDirs = ['src/test/java']
         }
     }
+}
+repositories {
+    mavenCentral()
 }

@@ -6,12 +6,4 @@
 <module name="Checker">
     <property name="severity" value="error"/>
 
-    <module name="TreeWalker">
-        <module name="WhitespaceAfter"/>
-        <module name="FinalLocalVariable"/>
-        <module name="EmptyCatchBlock"/>
-        <module name="AvoidStarImport"/>
-        <module name="UnusedImports"/>
-        <module name="RedundantModifier"/>
-    </module>
 </module>
