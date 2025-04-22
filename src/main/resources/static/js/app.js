@@ -91,3 +91,17 @@ function removeStudentFromGroup(studentId, groupId) {
         loadGroups();
     });
 }
+loadGroups();
+
+document.getElementById("manage-group-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const studentId = document.getElementById("group-student-id").value;
+    const groupId = document.getElementById("group-id").value;
+    addStudentToGroup(studentId, groupId);
+});
+
+document.getElementById("remove-from-group").addEventListener("click", function () {
+    const studentId = document.getElementById("group-student-id").value;
+    const groupId = document.getElementById("group-id").value;
+    removeStudentFromGroup(studentId, groupId);
+});

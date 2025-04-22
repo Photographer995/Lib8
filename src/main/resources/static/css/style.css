@@ -6,7 +6,7 @@ body {
     color: #e0e0e0;
     padding: 40px;
     margin: 0;
-    background-image: url('https://avatars.mds.yandex.net/i?id=4e21d19150ec6f3fdd2d8cfa8b3b670a8a367f02-12569941-images-thumbs&n=13'); /* тёмный minecraft стиль */
+    background-image: url('https://avatars.mds.yandex.net/i?id=390f4a573cd2ce3a3eae5870137e247fa73c6dbd-5887371-images-thumbs&n=13'); /* тёмный minecraft стиль */
     background-size: cover;
     background-attachment: fixed;
 }
@@ -80,4 +80,30 @@ button {
 
 button:hover {
     background-color: #666;
+}
+#groupList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+#groupList li {
+    background-color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid #555;
+    border-radius: 6px;
+}
+
+#manage-group-form input {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+#manage-group-form button {
+    margin-top: 10px;
+    margin-right: 10px;
 }
