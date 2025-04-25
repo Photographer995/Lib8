@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-  # 1. Сборка JAR-артефакта
   build:
     runs-on: ubuntu-latest
 
@@ -17,17 +16,16 @@ jobs:
       - name: Set up Java 23
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '23'
 
-      - name: Grant execute permission for Gradle wrapper
+      - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build JAR (skip tests)
+      - name: Build JAR
         run: ./gradlew clean bootJar -x test --stacktrace
 
       - name: Upload JAR artifact
-        id: upload
         uses: actions/upload-artifact@v4
         with:
           name: spring-boot-jar
@@ -44,14 +42,22 @@ jobs:
         with:
           name: spring-boot-jar
 
-      - name: Deploy to VPS via SSH
+      - name: Copy JAR to server via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "spring-boot-jar/*.jar"
+          target: "/home/${{ secrets.SSH_USER }}/app/"
+
+      - name: Restart service on server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}     
-          source: "spring-boot-jar/*.jar"
-          target: "/home/${{ secrets.SSH_USER }}/app/app.jar"
-          command: |
+          port: ${{ secrets.SSH_PORT }}
+          script: |
             sudo systemctl restart my-spring-app
