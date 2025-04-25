@@ -2,18 +2,14 @@
 FROM eclipse-temurin:23-jdk AS builder
 WORKDIR /app
 
-
 COPY . .
 RUN chmod +x gradlew
-
-
 RUN ./gradlew build -x test --stacktrace --info
 
 
+RUN echo ">>> BUILDER /app:" && ls -R /app
+
 FROM eclipse-temurin:23-jre
 WORKDIR /app
-
-RUN echo "=== /app contains ===" && ls -al /app && echo "=== /app/build/libs contains ===" && ls -al /app/build/libs
-
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=builder /app/build/libs/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
