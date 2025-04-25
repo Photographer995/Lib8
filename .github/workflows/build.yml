@@ -32,7 +32,8 @@ jobs:
           path: build/libs/*.jar
 
 
-    deploy:
+  
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     if: ${{ success() }}
@@ -40,7 +41,6 @@ jobs:
     steps:
       - name: Deploy to Railway
         run: |
-          npm install -g @railway/cli
+          npm install -g railway
           railway login --token ${{ secrets.RAILWAY_TOKEN }}
           railway up
-
