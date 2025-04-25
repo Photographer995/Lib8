@@ -31,33 +31,15 @@ jobs:
           name: spring-boot-jar
           path: build/libs/*.jar
 
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     if: ${{ success() }}
 
     steps:
-      - name: Download JAR artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: spring-boot-jar
-
-      - name: Copy JAR to server via SCP
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "spring-boot-jar/*.jar"
-          target: "/home/${{ secrets.SSH_USER }}/app/"
-
-      - name: Restart service on server
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            sudo systemctl restart my-spring-app
+      - name: Deploy to Railway
+        run: |
+          npm install -g railway
+          railway login --token ${{ secrets.RAILWAY_TOKEN }}
+          railway up
