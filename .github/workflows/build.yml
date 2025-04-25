@@ -1,4 +1,4 @@
-name: CI: Build Spring Boot & Docker
+name: CI Build Spring Boot
 
 on:
   push:
@@ -13,41 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Temurin JDK 23
+      - name: Set up Java 23
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: '23'
-          cache: gradle
 
-      - name: Make Gradle wrapper executable
+      - name: Grant execute permission for Gradle wrapper
         run: chmod +x ./gradlew
 
-      - name: Build bootJar (skip tests)
+      - name: Build JAR (skip tests)
         run: ./gradlew clean bootJar -x test --stacktrace
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v3
         with:
-          name: spring-boot-app-jar
+          name: spring-boot-jar
           path: build/libs/*.jar
-
-  docker:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build Docker image
-        run: docker build -t my-spring-app .
-
-      - name: Save Docker image to archive
-        run: docker save my-spring-app | gzip > my-spring-app.tar.gz
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: spring-boot-app-docker
-          path: my-spring-app.tar.gz
