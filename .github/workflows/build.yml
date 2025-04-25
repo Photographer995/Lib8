@@ -33,14 +33,15 @@ jobs:
 
 
   
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  if: ${{ success() }}
 
-    steps:
-      - name: Deploy to Railway
-        run: |
-          npm install -g railway
-          railway login --token ${{ secrets.RAILWAY_TOKEN }}
-          railway up
+  steps:
+    - name: Deploy to Railway
+      run: |
+        npm install -g @railway/cli
+        railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        railway up
+
