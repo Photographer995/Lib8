@@ -1,16 +1,16 @@
+
 build/
 
-# 2) Но разрешаем папку build/libs и сами JAR-файлы внутри
 !build/libs/
 !build/libs/*.jar
 
-# 3) Остальные артефакты Gradle/IDE
 **/.git
+
 Help.md
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
 
-# IDE STS
+# IDE: STS, IntelliJ IDEA, NetBeans, VS Code
 .apt_generated
 .classpath
 .factorypath
@@ -18,25 +18,18 @@ Help.md
 .settings
 .springBeans
 .sts4-cache
-
-# IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
 out/
-
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-# VS Code
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 .vscode/
 
-# Игнорируем собранные артефакты в исходниках
 !**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/main/**/bin/
