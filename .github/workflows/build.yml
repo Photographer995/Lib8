@@ -33,17 +33,25 @@ jobs:
 
 
   deploy:
-   needs: build
-   runs-on: ubuntu-latest
-   if: ${{ success() }}
-   steps:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
     - name: Download JAR artifact
       uses: actions/download-artifact@v4
       with:
         name: spring-boot-jar
 
+    - name: List files for debug
+      run: ls -R
+
     - name: Install Railway CLI
       run: npm install -g @railway/cli
+
+    - name: Link Railway project
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: railway link <project_id> # Заменить на твой ID
 
     - name: Deploy to Railway
       env:
